@@ -3,6 +3,7 @@ import NavBar from './components/Navbar';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from './pages/HomePage';
 import CreateQuizPage from './pages/CreateQuizPage';
+import AllQuizzes from './pages/AllQuizzes';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage/>} />
           <Route path="/create-quiz" element={<CreateQuizPage/>} />
+          <Route path="/quizes" element={<AllQuizzes/>} />
         </Routes>
       </BrowserRouter>
     </div>
