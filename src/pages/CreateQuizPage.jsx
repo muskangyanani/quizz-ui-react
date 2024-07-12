@@ -5,6 +5,8 @@ const CreateQuizPage = () => {
   const [quizName, setQuizName] = React.useState('');
   const [timeLimit, setTimeLimit] = React.useState('');
   const [questions, setQuestions] = React.useState([{ questionText: '', options: ['', '', '', ''], correctAnswer: '' }]);
+  const [showModal, setShowModal] = React.useState(false);
+  const [error, setError] = React.useState(null);
 
   const handleAddQuestion = () => {
     setQuestions([...questions, { questionText: '', options: ['', '', '', ''], correctAnswer: '' }]);
@@ -76,8 +78,11 @@ const CreateQuizPage = () => {
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/quizzes/create/', quizData);
       console.log('Quiz created successfully:', response.data);
+      setShowModal(true);
     } catch (error) {
       console.error('Error creating quiz:', error);
+      setShowModal(true);
+      setError('Error creating quiz. Please try again later.');
     }
   };
 
@@ -175,6 +180,28 @@ const CreateQuizPage = () => {
       >
         Create Quiz
       </button>
+      {showModal && (
+        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+          <div className='bg-white p-6 rounded-lg'>
+            <h2 className='font-bold text-xl'>{error!==null ? 'Error' : 'Success'}</h2>
+            <p>{error || 'Quiz created successfully!'}</p>
+            <div className='flex gap-4'>
+              <button
+                className='bg-teal-700 text-white p-3 rounded-lg hover:bg-teal-600 mt-4'
+                onClick={() => setShowModal(false)}
+              >
+                Close
+              </button>
+              <button
+                className='bg-teal-700 text-white p-3 rounded-lg hover:bg-teal-600 mt-4'
+                onClick={() => setShowModal(false)}
+              >
+                <a href='/quizzes'>View Quizzes</a>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

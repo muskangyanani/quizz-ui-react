@@ -4,7 +4,7 @@ import { MdQuiz } from "react-icons/md";
 
 const TakeQuizBtn = () => {
   return (
-    <div className='size-52 flex flex-col items-center justify-center hover:cursor-pointer'>
+    <div className='size-52 flex flex-col items-center justify-center hover:cursor-pointer hover:scale-105 transition-all'>
       <a href='/quizes' className='border border-teal-700 bg-teal-700 size-40 flex items-center justify-center rounded-md hover:scale-105 transition-all'>
         <MdQuiz className="text-3xl text-white" />
       </a>
