@@ -31,7 +31,12 @@ const AllQuizzes = () => {
                  <p>{quiz.no_of_questions} Q</p>
                </div>
                <div>
-                 <button className='border border-neutral-500 font-bold w-full py-1 rounded-lg text-black'>Start Quiz</button>
+                 <button 
+                  className='border border-neutral-500 font-bold w-full py-1 rounded-lg text-black'
+                  onClick={() => window.location.href = `/quiz/${quiz.id}`}
+                  >
+                    Start Quiz
+                  </button>
                </div>
              </div>
       ))}

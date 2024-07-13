@@ -127,7 +127,6 @@ const CreateQuizPage = () => {
                 onChange={(e) => handleQuestionChange(qIndex, e.target.value)}
               />
             </div>
-            <div className='flex gap-3 items-center'>
               <div className='grid grid-cols-2 gap-2 w-full'>
                 {question.options.map((option, oIndex) => (
                   <input
@@ -140,7 +139,6 @@ const CreateQuizPage = () => {
                   />
                 ))}
               </div>
-            </div>
             <div className='flex '>
               <p>Correct Answer:</p>
               <select
