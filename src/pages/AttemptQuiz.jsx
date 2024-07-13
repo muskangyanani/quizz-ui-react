@@ -12,13 +12,13 @@ const AttemptQuiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState({});
-  const [disableNext, setDisableNext] = useState(false);
+  const [score, setScore] = useState(0);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  let no_of_questions = questions.length;
 
   useEffect(() => {
     const path = window.location.pathname;
-    console.log(path);
     const quizId = path.split('/').pop();
-    console.log(quizId);
     axios.get(`http://localhost:8000/api/quizzes/${quizId}/`)
       .then((response) => {
         setQuestions(response.data.questions);
@@ -32,7 +32,6 @@ const AttemptQuiz = () => {
       });
   }, []);
 
-  
   useEffect(() => {
     if (minutes === 0 && seconds === 0) {
       return;
@@ -52,32 +51,27 @@ const AttemptQuiz = () => {
       }, 1000);
       return () => clearInterval(interval);
     }
-    
   }, [seconds, minutes, showTimerModal]);
 
   useEffect(() => {
     if (startTimer === 0) {
       setShowTimerModal(false);
     }
-    const timer = setInterval(()=>{
+    const timer = setInterval(() => {
       setStartTimer((prevStartTimer) => prevStartTimer - 1);
     }, 1000);
     return () => clearInterval(timer);
-  }, [startTimer])
-  
+  }, [startTimer]);
+
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      setDisableNext(true);
-      console.log('Quiz completed');
     }
   };
 
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
-      setDisableNext(false);
     }
   };
 
@@ -90,15 +84,36 @@ const AttemptQuiz = () => {
 
   const currentQuestion = questions[currentQuestionIndex];
 
+  const handelSubmitQuiz = () => {
+    let answerSubmitted = selectedOptions;
+    let correctAnswers = {};
+    let tempScore = 0;
+
+    questions.forEach((question, index) => {
+      question.options.forEach(option => {
+        if (option.is_correct) {
+          correctAnswers[index] = option.text;
+        }
+      });
+    });
+
+    for (let key in answerSubmitted) {
+      if (answerSubmitted[key] === correctAnswers[key]) {
+        tempScore += 1;
+      }
+    }
+    setScore(tempScore);
+    setIsSubmitted(true);
+  };
+
   return (
     <div className='mx-28 mt-10 p-4 flex flex-col gap-4'>
       <div className='flex justify-between items-center p-4'>
         <h1 className='text-5xl font-bold text-teal-600'>{quizName}</h1>
-        <p className='text-xl font-bold text-center'>
-          Time Limit: {time_limit} minutes
-          <br />
-          Timer: {minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}
-        </p>
+        <div className='text-xl font-bold text-center'>
+          <p>Time Limit: {time_limit} minutes</p>
+          <p className='text-red-600'>Timer: {minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}</p>
+        </div>
       </div>
       {showTimerModal && (
         <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 flex-col '>
@@ -106,8 +121,9 @@ const AttemptQuiz = () => {
           <h1 className='text-4xl text-red-600 font-bold'>{startTimer === 0 ? 'Time\'s up!' : `${startTimer} seconds`}</h1>
         </div>
       )}
+      <p className='mx-5 text-neutral-600'>{`${currentQuestionIndex + 1} / ${no_of_questions}`}</p>
       {currentQuestion && (
-        <Question 
+        <Question
           question={currentQuestion.text}
           currentQuestion={currentQuestionIndex + 1}
           options={currentQuestion.options}
@@ -116,28 +132,41 @@ const AttemptQuiz = () => {
         />
       )}
       <div className='grid grid-cols-2 gap-4'>
-        <button 
+        <button
           className='border py-2 font-bold text-white bg-teal-700 rounded-md hover:bg-teal-600 disabled:opacity-50'
           onClick={handlePreviousQuestion}
           disabled={currentQuestionIndex === 0}
         >
           &#8592; Previous
         </button>
-        <button 
+        <button
           className='border py-3 font-bold text-white bg-teal-700 rounded-md hover:bg-teal-600 disabled:opacity-50'
           onClick={handleNextQuestion}
-          disabled={disableNext}
+          disabled={currentQuestionIndex === questions.length - 1}
         >
           Next &#8594;
         </button>
       </div>
-      <div className='w-full border'>
-        <button 
-          className='border py-3 font-bold text-white bg-teal-700 rounded-md hover:bg-teal-600 w-full'
+      <div className='flex items-center justify-between'>
+        <button
+          className='border p-3 px-4 font-bold text-white bg-red-600 rounded-md hover:bg-red-500'
+          onClick={() => window.location.replace('/quizzes')}
+        >
+          Cancel
+        </button>
+        <button
+          className='border p-3 font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-md disabled:opacity-50'
+          onClick={handelSubmitQuiz}
+          disabled={isSubmitted}
         >
           Submit Quiz
         </button>
       </div>
+      {isSubmitted && (
+        <div className='mt-4 text-2xl font-bold text-green-600'>
+          Your Score: {score}/{questions.length}
+        </div>
+      )}
     </div>
   );
 };
