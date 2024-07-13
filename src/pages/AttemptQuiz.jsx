@@ -3,6 +3,8 @@ import Question from '../components/Question';
 import axios from 'axios';
 
 const AttemptQuiz = () => {
+  const [startTimer, setStartTimer] = useState(5);
+  const [showTimerModal, setShowTimerModal] = useState(true);
   const [quizName, setQuizName] = useState('');
   const [time_limit, setTimeLimit] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -30,26 +32,39 @@ const AttemptQuiz = () => {
       });
   }, []);
 
+  
   useEffect(() => {
     if (minutes === 0 && seconds === 0) {
       return;
     }
-    const interval = setInterval(() => {
-      if (seconds === 0) {
-        if (minutes === 0) {
-          clearInterval(interval);
+    if (!showTimerModal) {
+      const interval = setInterval(() => {
+        if (seconds === 0) {
+          if (minutes === 0) {
+            clearInterval(interval);
+          } else {
+            setMinutes((prevMinutes) => prevMinutes - 1);
+            setSeconds(59);
+          }
         } else {
-          setMinutes((prevMinutes) => prevMinutes - 1);
-          setSeconds(59);
+          setSeconds((prevSeconds) => prevSeconds - 1);
         }
-      } else {
-        setSeconds((prevSeconds) => prevSeconds - 1);
-      }
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+    
+  }, [seconds, minutes, showTimerModal]);
+
+  useEffect(() => {
+    if (startTimer === 0) {
+      setShowTimerModal(false);
+    }
+    const timer = setInterval(()=>{
+      setStartTimer((prevStartTimer) => prevStartTimer - 1);
     }, 1000);
-
-    return () => clearInterval(interval);
-  }, [seconds, minutes]);
-
+    return () => clearInterval(timer);
+  }, [startTimer])
+  
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -85,6 +100,12 @@ const AttemptQuiz = () => {
           Timer: {minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}
         </p>
       </div>
+      {showTimerModal && (
+        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 flex-col '>
+          <h2 className='font-bold text-4xl text-white'>Quiz Starts in</h2>
+          <h1 className='text-4xl text-red-600 font-bold'>{startTimer === 0 ? 'Time\'s up!' : `${startTimer} seconds`}</h1>
+        </div>
+      )}
       {currentQuestion && (
         <Question 
           question={currentQuestion.text}
