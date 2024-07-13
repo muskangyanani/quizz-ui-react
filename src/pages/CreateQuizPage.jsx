@@ -93,8 +93,8 @@ const CreateQuizPage = () => {
         <h2 className='font-bold'>Quiz Name: </h2>
         <input
           type='text'
-          placeholder='Enter Quiz Name...'
-          className='outline-none'
+          placeholder='Enter Quiz Name'
+          className='outline-none w-96'
           value={quizName}
           onChange={handleQuizNameChange}
         />
@@ -104,7 +104,7 @@ const CreateQuizPage = () => {
         <h2 className='font-bold'>Time Limit: </h2>
         <input
           type='text'
-          placeholder='Enter Time Limit in minutes...'
+          placeholder='Enter Time Limit in minutes'
           className='outline-none w-80'
           value={timeLimit}
           onChange={handleTimeLimitChange}
@@ -121,15 +121,14 @@ const CreateQuizPage = () => {
               <p>Q{qIndex + 1}:</p>
               <input
                 type='text'
-                placeholder='Enter Question...'
+                placeholder='Enter Question'
                 className='outline-none border p-3 w-full rounded-md'
                 value={question.questionText}
                 onChange={(e) => handleQuestionChange(qIndex, e.target.value)}
               />
             </div>
             <div className='flex gap-3 items-center'>
-              <p>Options:</p>
-              <div className='flex flex-col gap-2 w-full'>
+              <div className='grid grid-cols-2 gap-2 w-full'>
                 {question.options.map((option, oIndex) => (
                   <input
                     key={oIndex}
