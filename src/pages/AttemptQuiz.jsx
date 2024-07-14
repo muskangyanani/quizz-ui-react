@@ -137,7 +137,7 @@ const AttemptQuiz = () => {
           </button>
         </div>
       )}
-      
+
       <p className='mx-5 text-neutral-600'>{`${currentQuestionIndex + 1} / ${no_of_questions}`}</p>
       {currentQuestion && (
         <Question
@@ -183,10 +183,15 @@ const AttemptQuiz = () => {
       {isSubmitted && !timeUp ? (
         <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 flex-col'>
           <div className='bg-white p-6 px-10 rounded-lg text-center flex flex-col gap-4'>
-            <h2 className='text-4xl text-green-500 font-bold'>Congratulations</h2>
+            {score === no_of_questions ?
+              <h2 className='text-4xl text-green-500 font-bold'>Congratulations</h2>
+              :
+              <h2 className='text-4xl text-green-500 font-bold'>You Scored</h2>
+            }
+
             <p className='text-lg'>Your Score</p>
             <p className='text-2xl font-bold'><span className='text-green-500'>{score}</span> / {no_of_questions}</p>
-            <button 
+            <button
               className='w-full p-3 bg-teal-700 text-white rounded-lg text-lg'
               onClick={() => window.location.replace('/quizzes')}
             >
@@ -194,7 +199,7 @@ const AttemptQuiz = () => {
             </button>
           </div>
         </div>
-      ): null}
+      ) : null}
     </div>
   );
 };

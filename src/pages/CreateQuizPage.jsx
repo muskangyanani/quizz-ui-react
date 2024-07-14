@@ -86,6 +86,7 @@ const CreateQuizPage = () => {
     }
   };
 
+
   return (
     <div className=' mx-40 flex flex-col gap-4 mt-10'>
       <div className='flex p-4 border border-black rounded-lg gap-2'>
@@ -127,18 +128,18 @@ const CreateQuizPage = () => {
                 onChange={(e) => handleQuestionChange(qIndex, e.target.value)}
               />
             </div>
-              <div className='grid grid-cols-2 gap-2 w-full'>
-                {question.options.map((option, oIndex) => (
-                  <input
-                    key={oIndex}
-                    type='text'
-                    placeholder={`Option ${oIndex + 1}`}
-                    className='outline-none border p-3 w-full rounded-md'
-                    value={option}
-                    onChange={(e) => handleOptionChange(qIndex, oIndex, e.target.value)}
-                  />
-                ))}
-              </div>
+            <div className='grid grid-cols-2 gap-2 w-full'>
+              {question.options.map((option, oIndex) => (
+                <input
+                  key={oIndex}
+                  type='text'
+                  placeholder={`Option ${oIndex + 1}`}
+                  className='outline-none border p-3 w-full rounded-md'
+                  value={option}
+                  onChange={(e) => handleOptionChange(qIndex, oIndex, e.target.value)}
+                />
+              ))}
+            </div>
             <div className='flex '>
               <p>Correct Answer:</p>
               <select
@@ -172,7 +173,7 @@ const CreateQuizPage = () => {
           </button>
         </div>
       </div>
-      <button 
+      <button
         className='bg-teal-700 text-white p-3 rounded-lg hover:bg-teal-600' onClick={handleSubmit}
       >
         Create Quiz
@@ -180,7 +181,7 @@ const CreateQuizPage = () => {
       {showModal && (
         <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
           <div className='bg-white p-6 rounded-lg'>
-            <h2 className='font-bold text-xl'>{error!==null ? 'Error' : 'Success'}</h2>
+            <h2 className='font-bold text-xl'>{error !== null ? 'Error' : 'Success'}</h2>
             <p>{error || 'Quiz created successfully!'}</p>
             <div className='flex gap-4'>
               <button
