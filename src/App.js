@@ -9,6 +9,7 @@ import Signup from './pages/Signup.jsx'
 import Login from './pages/Login.jsx'
 import { AuthProvider } from './contexts/AuthContext.jsx'
 import PrivateRoute from './components/PrivateRoute.jsx'
+import NotFound from './pages/NotFound.jsx';
 
 function App() {
   const location = useLocation();
@@ -20,9 +21,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<HomePage />} />
-        <Route path="/create-quiz" element={<PrivateRoute><CreateQuizPage /></PrivateRoute>} />
-        <Route path="/quizzes" element={<PrivateRoute><AllQuizzes /></PrivateRoute>} />
-        <Route path='/quiz/:id' element={<PrivateRoute><AttemptQuiz /></PrivateRoute>} />
+        <Route path="/create-quiz" element={<PrivateRoute component={CreateQuizPage} />} />
+        <Route path="/quizzes" element={<PrivateRoute component={AllQuizzes} />} />
+        <Route path='/quiz/:id' element={<PrivateRoute component={AttemptQuiz} />} />
+        <Route path='*' element={<NotFound />} />
       </Routes>
     </div>
   );

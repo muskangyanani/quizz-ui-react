@@ -180,23 +180,10 @@ const CreateQuizPage = () => {
       </button>
       {showModal && (
         <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
-          <div className='bg-white p-6 rounded-lg'>
+          <div className='bg-white p-6 rounded-lg flex flex-col gap-2'>
             <h2 className='font-bold text-xl'>{error !== null ? 'Error' : 'Success'}</h2>
             <p>{error || 'Quiz created successfully!'}</p>
-            <div className='flex gap-4'>
-              <button
-                className='bg-teal-700 text-white p-3 rounded-lg hover:bg-teal-600 mt-4'
-                onClick={() => setShowModal(false)}
-              >
-                Close
-              </button>
-              <button
-                className='bg-teal-700 text-white p-3 rounded-lg hover:bg-teal-600 mt-4'
-                onClick={() => setShowModal(false)}
-              >
-                <a href='/quizzes'>View Quizzes</a>
-              </button>
-            </div>
+            <a href='/quizzes' onClick={() => setShowModal(false)} className='bg-teal-700 text-white p-3 rounded-lg hover:bg-teal-600 mt-4 text-center'>View Quizzes</a>
           </div>
         </div>
       )}

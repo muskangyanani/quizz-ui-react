@@ -19,7 +19,6 @@ function LoginComponent() {
             })
         });
         const data = await response.json();
-        console.log(data);
 
         if (response.status === 200) {
             console.log("Logged In");

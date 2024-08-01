@@ -121,9 +121,10 @@ const AttemptQuiz = () => {
         </div>
       </div>
       {showTimerModal && (
-        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 flex-col '>
+        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 flex-col gap-2 '>
           <h2 className='font-bold text-4xl text-white'>Quiz Starts in</h2>
           <h1 className='text-4xl text-red-600 font-bold'>{startTimer === 0 ? 'Start!' : `${startTimer} seconds`}</h1>
+          <a href='/quizzes' className='border p-3 px-4 font-bold text-white bg-red-600 rounded-md hover:bg-red-500'>Cancle</a>
         </div>
       )}
       {timeUp && (

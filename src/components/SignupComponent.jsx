@@ -15,22 +15,33 @@ function SignupComponent() {
     const navigate = useNavigate()
 
     registerUser = async (email, username, password, password2) => {
+        try {
+            const response = await fetch("http://localhost:8000/auth/register/", {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify({
+                    email, username, password, password2
+                })
+            });
+            const data = await response.json();
+            console.log(data);
 
-        const response = await fetch("http://localhost:8000/auth/register/", {
-            method: "POST",
-            headers: {
-                "Content-type": "application/json"
-            },
-            body: JSON.stringify({
-                email, username, password, password2
-            })
-        });
-        console.log(response.data);
-
-        if (response.status === 201) {
-            navigate('/login');
-        } else {
-            setError("User Already exist. try again!")
+            if (response.status === 201) {
+                navigate('/login');
+            } else {
+                if (data.email) {
+                    setError(data.email)
+                } else if (!data.email && data.username) {
+                    setError(data.username)
+                } else {
+                    setError(data.password)
+                }
+            }
+        }
+        catch (error) {
+            console.log(error);
         }
     };
 
