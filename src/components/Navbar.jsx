@@ -24,14 +24,20 @@ export default function Navbar() {
   }
 
   return (
-    <div className="border h-16 flex justify-between items-center p-6 shadow-md">
+    <div className="border h-20 flex justify-between items-center p-6 shadow-md">
       <a href="/" className="text-teal-700 font-extrabold text-3xl">QUIZZ</a>
       <div className="flex gap-6">
         {user !== null ?
           <div className="flex gap-6 items-center">
             <button onClick={logoutUser} className="bg-teal-700 px-3 py-2 rounded-lg text-white font-bold">Logout</button>
             <p className="font-bold text-lg">Welcome {user.username.charAt(0).toUpperCase() + user.username.slice(1)} !</p>
-            <button onClick={handleProfileClick} className="bg-slate-300 text-neutral-700 size-10 font-bold rounded-full">{user.username[0].toUpperCase()}</button>
+            <div className="size-12 bg-teal-700 cursor-pointer rounded-full flex items-center justify-center text-white text-3xl font-bold" onClick={() => { navigate('/profile') }}>
+              {user.image ?
+                <img src={`http://localhost:8000${user.image}`} alt="profile" className="w-full h-full object-cover rounded-full" />
+                :
+                user.username[0].toUpperCase()
+              }
+            </div>
           </div>
 
           :

@@ -10,6 +10,7 @@ const AuthContext = createContext({
     registerUser: () => { },
     loginUser: () => { },
     logoutUser: () => { },
+    updateUser: () => { },
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -70,6 +71,10 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const updateUser = (newUserData) => {
+        setUser(newUserData);
+    };
+
 
     const [loading, setLoading] = useState(true);
 
@@ -90,6 +95,7 @@ export const AuthProvider = ({ children }) => {
         registerUser,
         loginUser,
         logoutUser,
+        updateUser,
     };
 
     useEffect(() => {
