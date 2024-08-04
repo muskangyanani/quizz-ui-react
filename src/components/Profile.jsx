@@ -1,164 +1,116 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { jwtDecode } from "jwt-decode";
+// import { useNavigate } from 'react-router-dom';
+
 
 function Profile() {
-    const [userDetail, setUserDetail] = useState({
-        username: '',
-        full_name: '',
-        image: ''
-    });
-    const { user } = useAuth();
-    const [profileImage, setProfileImage] = useState(null);
-    const [accessToken, setAccessToken] = useState(null);
-    const [isEditing, setIsEditing] = useState(false);
 
-    useEffect(() => {
-        const tokens = JSON.parse(localStorage.getItem('authTokens'));
-        if (tokens) {
-            setAccessToken(tokens.access);
-            fetchUserDetails(tokens.access);
-        }
-    }, [accessToken]);
+    let { user } = useAuth()
+    const authTokens = localStorage.getItem("authTokens") ? JSON.parse(localStorage.getItem("authTokens")) : null;
+    user = authTokens ? jwtDecode(authTokens.access) : null;
+    console.log(user)
 
-    const fetchUserDetails = (token) => {
-        axios.get('http://127.0.0.1:8000/auth/user/', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-            .then((response) => {
-                const data = response.data.response;
-                setUserDetail(data);
-            })
-            .catch(async (error) => {
-                if (error.response && error.response.status === 401) {
-                    try {
-                        const refreshResponse = await axios.post('http://127.0.0.1:8000/auth/token/refresh/', {
-                            refresh: JSON.parse(localStorage.getItem('authTokens')).refresh
-                        });
-                        const newTokens = refreshResponse.data;
-                        localStorage.setItem('authTokens', JSON.stringify(newTokens));
-                        setAccessToken(newTokens.access);
-                        fetchUserDetails(newTokens.access);
-                    } catch (refreshError) {
-                        console.error('Error refreshing token:', refreshError);
-                        // Handle refresh token expiry, logout user, etc.
-                    }
-                } else {
-                    console.error('Error fetching user details:', error.response);
-                }
-            });
-    };
+    // const navigate = useNavigate()
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setUserDetail({
-            ...userDetail,
-            [name]: value
-        });
-    };
+    const [editMode, setEditMode] = useState(false);
+    const [username, setUsername] = useState(user.username);
+    const [fullName, setFullName] = useState(user.full_name);
 
-    const handleImageChange = (e) => {
-        setProfileImage(e.target.files[0]);
-    };
+    const handleEditClick = () => {
+        setEditMode(true);
+    }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const formData = new FormData();
-        if (userDetail.username) {
-            formData.append('username', userDetail.username);
-        }
-        if (userDetail.full_name) {
-            formData.append('full_name', userDetail.full_name);
-        }
-        if (profileImage) {
-            formData.append('image', profileImage);
-        }
-
+    const handleSaveClick = async () => {
         try {
-            const response = await axios.patch('http://127.0.0.1:8000/auth/update-profile/', formData, {
+
+            const authTokens = JSON.parse(localStorage.getItem('authTokens'));
+            const accessToken = authTokens.access;
+            console.log(accessToken);
+
+            const response = await axios.patch('http://localhost:8000/auth/update-profile/', {
+                username: username,
+                full_name: fullName
+            }, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${accessToken}`
+                    Authorization: `Bearer ${accessToken}`
                 }
             });
-            setUserDetail(response.data.response);
-            setIsEditing(false); // Exit edit mode
+            console.log(response.data);
+            setEditMode(false);
         } catch (error) {
-            if (error.response) {
-                console.error('Error updating profile:', error.response);
-            } else if (error.request) {
-                console.error('Error request:', error.request);
-            } else {
-                console.error('Error message:', error.message);
-            }
+            console.log(error);
         }
-    };
+    }
+
+
 
     return (
         <div className="bg-white p-6 mx-auto">
             <div className="flex items-center space-x-4">
-                <div className="size-24 bg-teal-700 rounded-full flex items-center justify-center text-white text-3xl font-bold">
-                    <img src={userDetail.image} alt={user.username[0].toUpperCase()} />
+                <div className="w-16 h-16 bg-teal-700 rounded-full flex items-center justify-center text-white text-3xl font-bold">
+                    T
                 </div>
                 <div className="flex-grow">
-                    <div className="text-gray-700 text-lg">
-                        {isEditing ? (
-                            <form onSubmit={handleSubmit} className="flex flex-col space-y-2">
-                                <div>
-                                    <label>Username:</label>
-                                    <input
+                    <div className="text-gray-700">
+                        {editMode ? (
+                            <div className='flex flex-col gap-3'>
+                                <p className='font-bold'>
+                                    Username - <input
                                         type="text"
-                                        name="username"
-                                        value={userDetail.username}
-                                        onChange={handleInputChange}
-                                        className="border border-gray-300 rounded px-2 py-1"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        className="border font-normal border-gray-300 px-2 py-1 rounded"
                                     />
-                                </div>
-                                <div>
-                                    <label>Full Name:</label>
-                                    <input
+                                </p>
+                                <p className='font-bold'>
+                                    Full Name - <input
                                         type="text"
-                                        name="full_name"
-                                        value={userDetail.full_name}
-                                        onChange={handleInputChange}
-                                        className="border border-gray-300 rounded px-2 py-1"
+                                        value={fullName}
+                                        onChange={(e) => setFullName(e.target.value)}
+                                        className="border font-normal border-gray-300 px-2 py-1 rounded"
                                     />
-                                </div>
-                                <div>
-                                    <label>Profile Image:</label>
-                                    <input
-                                        type="file"
-                                        name="image"
-                                        onChange={handleImageChange}
-                                        className="border border-gray-300 rounded px-2 py-1"
-                                    />
-                                </div>
-                                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
-                                    Save
-                                </button>
-                                <button type="button" onClick={() => setIsEditing(false)} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition mt-2">
-                                    Cancel
-                                </button>
-                            </form>
+                                </p>
+                            </div>
                         ) : (
                             <div>
-                                <p>Username - {userDetail.username}</p>
-                                <p>Full Name - {userDetail.full_name}</p>
+                                <p>Username - {username}</p>
+                                <p>Full Name - {fullName}</p>
                                 <p>Email - {user.email}</p>
                                 <p>Quiz Created - 10</p>
                             </div>
                         )}
                     </div>
-                    {!isEditing && (
-                        <div className="mt-4 flex flex-col w-fit">
-                            <button onClick={() => setIsEditing(true)} className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition">
+                    <div className="mt-4 space-x-2">
+                        {editMode ? (
+                            <div className='flex gap-4'>
+                                <button
+                                    className="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition"
+                                    onClick={handleSaveClick}
+                                >
+                                    Save
+                                </button>
+                                <button
+                                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+                                    onClick={() => {
+                                        setEditMode(false);
+                                        setUsername(user.username);
+                                        setFullName(user.full_name)
+                                    }}
+                                >
+                                    Cancle
+                                </button>
+                            </div>
+                        ) : (
+                            <button
+                                className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition"
+                                onClick={handleEditClick}
+                            >
                                 Edit profile
                             </button>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
