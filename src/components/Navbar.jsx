@@ -10,8 +10,6 @@ export default function Navbar() {
 
   user = localStorage.getItem("authTokens") ? jwtDecode(localStorage.getItem("authTokens")) : null;
 
-  console.log(user)
-
   logoutUser = () => {
     setAuthTokens(null);
     setUser(null);

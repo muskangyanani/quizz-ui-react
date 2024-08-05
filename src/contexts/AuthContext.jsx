@@ -10,11 +10,11 @@ const AuthContext = createContext({
     registerUser: () => { },
     loginUser: () => { },
     logoutUser: () => { },
-    updateUser: () => { },
+    updateUser: () => { }, // Add this function
+    refreshToken: () => { }, // Add this function
 });
 
 export const useAuth = () => useContext(AuthContext);
-
 
 export const AuthProvider = ({ children }) => {
     const [authTokens, setAuthTokens] = useState(() => {
@@ -25,18 +25,18 @@ export const AuthProvider = ({ children }) => {
         return localStorage.getItem("authTokens") ? jwtDecode(localStorage.getItem("authTokens")) : null;
     });
 
-    const registerUser = async (email, username, password, password2) => {
+    const [loading, setLoading] = useState(true); // Add this line to define loading state
 
+    const navigate = useNavigate();
+
+    const registerUser = async (email, username, password, password2) => {
         const response = await fetch("http://localhost:8000/auth/register/", {
             method: "POST",
             headers: {
                 "Content-type": "application/json"
             },
-            body: JSON.stringify({
-                email, username, password, password2
-            })
+            body: JSON.stringify({ email, username, password, password2 })
         });
-        console.log(response.data);
 
         if (response.status === 201) {
             navigate('/login');
@@ -49,36 +49,20 @@ export const AuthProvider = ({ children }) => {
     const loginUser = async (email, password) => {
         const response = await fetch("http://localhost:8000/auth/token/", {
             method: "POST",
-            headers: {
-                "Content-type": "application/json"
-            },
-            body: JSON.stringify({
-                email, password
-            })
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({ email, password })
         });
-        const data = await response.json();
-        console.log(data);
 
+        const data = await response.json();
         if (response.status === 200) {
-            console.log("Logged In");
             setAuthTokens(data);
             setUser(jwtDecode(data.access));
             localStorage.setItem("authTokens", JSON.stringify(data));
             navigate('/');
         } else {
             console.log(response.status);
-            // setError("No active account found with the given credentials")
         }
     };
-
-    const updateUser = (newUserData) => {
-        setUser(newUserData);
-    };
-
-
-    const [loading, setLoading] = useState(true);
-
-    const navigate = useNavigate();
 
     const logoutUser = () => {
         setAuthTokens(null);
@@ -86,6 +70,34 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("authTokens");
         navigate('/login');
     };
+
+    const refreshToken = async () => {
+        const response = await fetch("http://localhost:8000/auth/token/refresh/", {
+            method: "POST",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({ refresh: authTokens.refresh })
+        });
+
+        const data = await response.json();
+        if (response.status === 200) {
+            setAuthTokens(data);
+            setUser(jwtDecode(data.access));
+            localStorage.setItem("authTokens", JSON.stringify(data));
+        } else {
+            logoutUser();
+        }
+    };
+
+    const updateUser = (updatedUser) => {
+        setUser(updatedUser);
+    };
+
+    useEffect(() => {
+        if (authTokens) {
+            setUser(jwtDecode(authTokens.access));
+        }
+        setLoading(false);
+    }, [authTokens]);
 
     const contextData = {
         user,
@@ -96,14 +108,8 @@ export const AuthProvider = ({ children }) => {
         loginUser,
         logoutUser,
         updateUser,
+        refreshToken,
     };
-
-    useEffect(() => {
-        if (authTokens) {
-            setUser(jwtDecode(authTokens.access));
-        }
-        setLoading(false);
-    }, [authTokens, loading]);
 
     return (
         <AuthContext.Provider value={contextData}>
