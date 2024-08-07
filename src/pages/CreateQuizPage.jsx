@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { useAuth } from '../contexts/AuthContext';
 
 const CreateQuizPage = () => {
   const [quizName, setQuizName] = React.useState('');
@@ -7,6 +8,9 @@ const CreateQuizPage = () => {
   const [questions, setQuestions] = React.useState([{ questionText: '', options: ['', '', '', ''], correctAnswer: '' }]);
   const [showModal, setShowModal] = React.useState(false);
   const [error, setError] = React.useState(null);
+
+  const { user } = useAuth();
+  console.log(user)
 
   const handleAddQuestion = () => {
     setQuestions([...questions, { questionText: '', options: ['', '', '', ''], correctAnswer: '' }]);
@@ -72,7 +76,8 @@ const CreateQuizPage = () => {
           text: option,
           is_correct: option === question.correctAnswer
         }))
-      }))
+      })),
+      created_by: user.user_id
     };
     console.log('Quiz Data:', quizData);
     try {
@@ -80,7 +85,7 @@ const CreateQuizPage = () => {
       console.log('Quiz created successfully:', response.data);
       setShowModal(true);
     } catch (error) {
-      console.error('Error creating quiz:', error);
+      console.error('Error creating quiz:', error.response ? error.response.data : error.message);
       setShowModal(true);
       setError('Error creating quiz. Please try again later.');
     }
