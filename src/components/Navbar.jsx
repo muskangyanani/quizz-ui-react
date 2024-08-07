@@ -28,7 +28,6 @@ export default function Navbar() {
         {user !== null ?
           <div className="flex gap-6 items-center">
             <button onClick={logoutUser} className="bg-teal-700 px-3 py-2 rounded-lg text-white font-bold">Logout</button>
-            <p className="font-bold text-lg">Welcome {user.username.charAt(0).toUpperCase() + user.username.slice(1)} !</p>
             <div className="size-12 bg-teal-700 cursor-pointer rounded-full flex items-center justify-center text-white text-3xl font-bold" onClick={() => { navigate('/profile') }}>
               {user.image ?
                 <img src={`http://localhost:8000${user.image}`} alt="profile" className="w-full h-full object-cover rounded-full" />

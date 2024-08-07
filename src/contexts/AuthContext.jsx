@@ -10,8 +10,7 @@ const AuthContext = createContext({
     registerUser: () => { },
     loginUser: () => { },
     logoutUser: () => { },
-    updateUser: () => { }, // Add this function
-    refreshToken: () => { }, // Add this function
+    updateUser: () => { }
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -25,7 +24,7 @@ export const AuthProvider = ({ children }) => {
         return localStorage.getItem("authTokens") ? jwtDecode(localStorage.getItem("authTokens")) : null;
     });
 
-    const [loading, setLoading] = useState(true); // Add this line to define loading state
+    const [loading, setLoading] = useState(true);
 
     const navigate = useNavigate();
 
@@ -71,23 +70,6 @@ export const AuthProvider = ({ children }) => {
         navigate('/login');
     };
 
-    const refreshToken = async () => {
-        const response = await fetch("http://localhost:8000/auth/token/refresh/", {
-            method: "POST",
-            headers: { "Content-type": "application/json" },
-            body: JSON.stringify({ refresh: authTokens.refresh })
-        });
-
-        const data = await response.json();
-        if (response.status === 200) {
-            setAuthTokens(data);
-            setUser(jwtDecode(data.access));
-            localStorage.setItem("authTokens", JSON.stringify(data));
-        } else {
-            logoutUser();
-        }
-    };
-
     const updateUser = (updatedUser) => {
         setUser(updatedUser);
     };
@@ -107,8 +89,7 @@ export const AuthProvider = ({ children }) => {
         registerUser,
         loginUser,
         logoutUser,
-        updateUser,
-        refreshToken,
+        updateUser
     };
 
     return (

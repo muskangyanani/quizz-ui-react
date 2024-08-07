@@ -2,12 +2,12 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { jwtDecode } from "jwt-decode";
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const baseURL = "http://localhost:8000/auth";
 
 const useAxios = () => {
-    const { authTokens, setAuthTokens, setUser } = useContext(AuthContext);
+    const { authTokens, setAuthTokens, setUser } = useAuth();
 
     const axiosInstance = axios.create({
         baseURL,
