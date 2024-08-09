@@ -112,24 +112,24 @@ const AttemptQuiz = () => {
   };
 
   return (
-    <div className='mx-28 mt-10 p-4 flex flex-col gap-4'>
-      <div className='flex justify-between items-center p-4'>
-        <h1 className='text-5xl font-bold text-teal-600'>{quizName}</h1>
-        <div className='text-xl font-bold text-center'>
+    <div className='mx-auto mt-10 p-4 flex flex-col gap-4 max-w-5xl w-full'>
+      <div className='flex flex-col sm:flex-row justify-between items-center p-4'>
+        <h1 className='text-3xl sm:text-4xl lg:text-5xl font-bold text-teal-600 text-center'>{quizName}</h1>
+        <div className='text-lg sm:text-xl font-bold text-center mt-4 sm:mt-0'>
           <p>Time Limit: {timeLimit} minutes</p>
           <p className='text-red-600'>Timer: {minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}</p>
         </div>
       </div>
       {showTimerModal && (
-        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 flex-col gap-2 '>
-          <h2 className='font-bold text-4xl text-white'>Quiz Starts in</h2>
+        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 flex-col gap-2 p-4'>
+          <h2 className='font-bold text-3xl sm:text-4xl text-white text-center'>Quiz Starts in</h2>
           <h1 className='text-4xl text-red-600 font-bold'>{startTimer === 0 ? 'Start!' : `${startTimer} seconds`}</h1>
-          <a href='/quizzes' className='border p-3 px-4 font-bold text-white bg-red-600 rounded-md hover:bg-red-500'>Cancle</a>
+          <a href='/quizzes' className='mt-4 border p-3 px-4 font-bold text-white bg-red-600 rounded-md hover:bg-red-500'>Cancel</a>
         </div>
       )}
       {timeUp && (
-        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 flex-col '>
-          <h2 className='font-bold text-4xl text-white'>Time's up!</h2>
+        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 flex-col gap-2 p-4'>
+          <h2 className='font-bold text-3xl sm:text-4xl text-white text-center'>Time's up!</h2>
           <button
             className='border p-3 mt-4 font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-md'
             onClick={() => setTimeUp(false)}
@@ -139,7 +139,7 @@ const AttemptQuiz = () => {
         </div>
       )}
 
-      <p className='mx-5 text-neutral-600'>{`${currentQuestionIndex + 1} / ${no_of_questions}`}</p>
+      <p className='mx-5 text-neutral-600 text-center'>{`${currentQuestionIndex + 1} / ${no_of_questions}`}</p>
       {currentQuestion && (
         <Question
           question={currentQuestion.text}
@@ -149,32 +149,32 @@ const AttemptQuiz = () => {
           setSelectedOption={handleOptionSelect}
         />
       )}
-      <div className='grid grid-cols-2 gap-4'>
+      <div className='grid grid-cols-2 gap-4 mt-4'>
         <button
-          className='border py-2 font-bold text-white bg-teal-700 rounded-md hover:bg-teal-600 disabled:opacity-50'
+          className='py-2 font-bold text-white bg-teal-700 rounded-md  disabled:opacity-50'
           onClick={handlePreviousQuestion}
           disabled={currentQuestionIndex === 0 || isSubmitted}
         >
           &#8592; Previous
         </button>
         <button
-          className='border py-3 font-bold text-white bg-teal-700 rounded-md hover:bg-teal-600 disabled:opacity-50'
+          className='py-2 font-bold text-white bg-teal-700 rounded-md disabled:opacity-50'
           onClick={handleNextQuestion}
           disabled={currentQuestionIndex === questions.length - 1 || isSubmitted}
         >
           Next &#8594;
         </button>
       </div>
-      <div className='flex items-center justify-between'>
+      <div className='flex flex-col sm:flex-row items-center justify-between mt-4'>
         <button
-          className='border p-3 px-4 font-bold text-white bg-red-600 rounded-md hover:bg-red-500'
+          className='w-full sm:w-auto border p-3 mb-2 sm:mb-0 px-4 font-bold text-white bg-red-600 rounded-md hover:bg-red-500'
           onClick={() => window.location.replace('/quizzes')}
           disabled={isSubmitted}
         >
           Cancel
         </button>
         <button
-          className='border p-3 font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-md disabled:opacity-50'
+          className='w-full sm:w-auto border p-3 font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-md disabled:opacity-50'
           onClick={handleSubmitQuiz}
           disabled={isSubmitted}
         >
@@ -182,7 +182,7 @@ const AttemptQuiz = () => {
         </button>
       </div>
       {isSubmitted && !timeUp ? (
-        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 flex-col'>
+        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 flex-col p-4'>
           <div className='bg-white p-6 px-10 rounded-lg text-center flex flex-col gap-4'>
             {score === no_of_questions ?
               <h2 className='text-4xl text-green-500 font-bold'>Congratulations</h2>
