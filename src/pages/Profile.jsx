@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { MdQuiz, MdEdit, MdSave, MdCancel } from 'react-icons/md';
+import useAxios from '../utils/useAxios';
 
 function Profile() {
     const { user, authTokens, updateUser } = useAuth();
@@ -13,6 +14,8 @@ function Profile() {
     const [userQuizzes, setUserQuizzes] = useState([]);
 
     const navigate = useNavigate()
+    const axios = useAxios();
+    const baseURL = "http://localhost:8000/auth";
 
     const handleEditClick = () => {
         setEditMode(true);
@@ -28,13 +31,12 @@ function Profile() {
 
         try {
             const accessToken = authTokens.access;
-            const response = await axios.patch('http://localhost:8000/auth/update-profile/', formData, {
+            const response = await axios.patch(`${baseURL}/update-user`, formData, {
                 headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'multipart/form-data'
+                    Authorization: `Bearer ${accessToken}`,
                 }
             });
-
+            // console.log(response.data);
             const updatedUser = response.data.response;
             console.log(updatedUser)
             updateUser(updatedUser);
@@ -99,7 +101,6 @@ function Profile() {
                                     <ProfileInfo label="Username" value={username} />
                                     <ProfileInfo label="Full Name" value={fullName} />
                                     <ProfileInfo label="Email" value={user.email} />
-                                    <ProfileInfo label="Quiz Created" value="10" />
                                 </>
                             )}
                         </div>

@@ -10,7 +10,7 @@ import Login from './pages/Login.jsx'
 import { AuthProvider } from './contexts/AuthContext.jsx'
 import PrivateRoute from './components/PrivateRoute.jsx'
 import NotFound from './pages/NotFound.jsx';
-import Profile from './components/Profile.jsx';
+import Profile from './pages/Profile.jsx';
 
 function App() {
   const location = useLocation();
