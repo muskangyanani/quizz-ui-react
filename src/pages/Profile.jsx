@@ -31,7 +31,7 @@ function Profile() {
 
         try {
             const accessToken = authTokens.access;
-            const response = await axios.patch(`${baseURL}/update-user`, formData, {
+            const response = await axios.patch(`${baseURL}/update-profile/`, formData, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 }
@@ -61,7 +61,6 @@ function Profile() {
                     }
                 });
                 setUserQuizzes(response.data);
-                console.log(response.data);
             } catch (error) {
                 console.log(error.response);
             }
