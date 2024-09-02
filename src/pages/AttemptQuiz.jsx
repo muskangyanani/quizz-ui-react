@@ -121,7 +121,7 @@ const AttemptQuiz = () => {
         </div>
       </div>
       {showTimerModal && (
-        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 flex-col gap-2 p-4'>
+        <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 flex-col gap-2 p-4 z-10'>
           <h2 className='font-bold text-3xl sm:text-4xl text-white text-center'>Quiz Starts in</h2>
           <h1 className='text-4xl text-red-600 font-bold'>{startTimer === 0 ? 'Start!' : `${startTimer} seconds`}</h1>
           <a href='/quizzes' className='mt-4 border p-3 px-4 font-bold text-white bg-red-600 rounded-md hover:bg-red-500'>Cancel</a>
@@ -151,7 +151,7 @@ const AttemptQuiz = () => {
       )}
       <div className='grid grid-cols-2 gap-4 mt-4'>
         <button
-          className='py-2 font-bold text-white bg-teal-700 rounded-md  disabled:opacity-50'
+          className='py-2 font-bold text-white bg-teal-700 rounded-md disabled:opacity-50'
           onClick={handlePreviousQuestion}
           disabled={currentQuestionIndex === 0 || isSubmitted}
         >
@@ -169,14 +169,14 @@ const AttemptQuiz = () => {
         <button
           className='w-full sm:w-auto border p-3 mb-2 sm:mb-0 px-4 font-bold text-white bg-red-600 rounded-md hover:bg-red-500'
           onClick={() => window.location.replace('/quizzes')}
-          disabled={isSubmitted}
+          disabled={isSubmitted || showTimerModal}
         >
           Cancel
         </button>
         <button
-          className='w-full sm:w-auto border p-3 font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-md disabled:opacity-50'
+          className='w-full sm:w-auto p-3 font-bold text-white bg-blue-600 rounded-md disabled:opacity-50'
           onClick={handleSubmitQuiz}
-          disabled={isSubmitted}
+          disabled={isSubmitted || showTimerModal}
         >
           Submit Quiz
         </button>
