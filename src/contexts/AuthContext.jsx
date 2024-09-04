@@ -71,7 +71,10 @@ export const AuthProvider = ({ children }) => {
     };
 
     const updateUser = (updatedUser) => {
-        setUser(updatedUser);
+        setUser(prevUser => ({
+            ...prevUser,
+            ...updatedUser
+        }));
     };
 
     useEffect(() => {
